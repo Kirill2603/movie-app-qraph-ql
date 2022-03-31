@@ -14,8 +14,9 @@ import {
 	Tr
 } from "@chakra-ui/react";
 import {DeleteIcon, EditIcon, HamburgerIcon} from "@chakra-ui/icons";
-import {EditMenu} from "./modals/edit-menu";
-import {DeleteMenu} from "./modals/delete-menu";
+import {EditMenu} from "../modals/edit-menu";
+import {DeleteMenu} from "../modals/delete-menu";
+import {ExchangeRates} from "./queries";
 
 export const MoviesList = () => {
 
@@ -84,9 +85,9 @@ export const MoviesList = () => {
 						</Tr>
 
 					</Tbody>
-
 				</Table>
 			</TableContainer>
+			<ExchangeRates/>
 		</>
 	);
 };

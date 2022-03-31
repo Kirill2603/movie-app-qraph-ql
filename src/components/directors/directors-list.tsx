@@ -14,8 +14,8 @@ import {
 } from "@chakra-ui/react";
 
 import {HamburgerIcon, DeleteIcon, EditIcon} from '@chakra-ui/icons'
-import {EditMenu} from "./modals/edit-menu";
-import {DeleteMenu} from "./modals/delete-menu";
+import {EditMenu} from "../modals/edit-menu";
+import {DeleteMenu} from "../modals/delete-menu";
 
 export const DirectorsList = () => {
 

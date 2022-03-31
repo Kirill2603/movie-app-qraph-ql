@@ -1,7 +1,7 @@
 import React from 'react';
 import {Button, Tab, TabList, TabPanel, TabPanels, Tabs, useColorMode} from "@chakra-ui/react";
-import {DirectorsList} from "./components/directors-list";
-import {MoviesList} from "./components/movies-list";
+import {DirectorsList} from "./components/directors/directors-list";
+import {MoviesList} from "./components/movies/movies-list";
 
 function App() {
 	const {colorMode, toggleColorMode} = useColorMode()
