@@ -1,26 +1,32 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import {Button, Tab, TabList, TabPanel, TabPanels, Tabs, useColorMode} from "@chakra-ui/react";
+import {DirectorsList} from "./components/directors-list";
+import {MoviesList} from "./components/movies-list";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+	const {colorMode, toggleColorMode} = useColorMode()
+	return (
+		<div>
+			<Button onClick={toggleColorMode}>
+				Toggle {colorMode === "light" ? "Dark" : "Light"}
+			</Button>
+			<Tabs align={"center"} isFitted variant='enclosed'>
+				<TabList>
+					<Tab _selected={{ color: 'white', bg: 'blue.500' }}>Directors</Tab>
+					<Tab _selected={{ color: 'white', bg: 'blue.500' }}>Movies</Tab>
+				</TabList>
+
+				<TabPanels>
+					<TabPanel>
+						<DirectorsList />
+					</TabPanel>
+					<TabPanel>
+						<MoviesList />
+					</TabPanel>
+				</TabPanels>
+			</Tabs>
+		</div>
+	);
 }
 
 export default App;
