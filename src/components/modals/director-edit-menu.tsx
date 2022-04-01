@@ -1,23 +1,24 @@
 import React, {useState} from 'react';
 import {
 	Box,
-	Button, Editable, EditableInput, EditablePreview, Modal,
+	Button, Editable, EditableInput, EditablePreview, ListItem, Modal,
 	ModalBody, ModalCloseButton,
 	ModalContent,
 	ModalFooter,
 	ModalHeader,
-	ModalOverlay,
+	ModalOverlay, Text, UnorderedList,
 } from "@chakra-ui/react";
 import {MovieType} from "../movies/movies-list";
+import {DirectorType} from "../directors/directors-list";
 
 type EditMenuPropsType = {
 	isOpen: boolean
 	onCancel: () => void
 	onSubmit: () => void
-	data?: MovieType
+	data?: DirectorType
 }
 
-export const DirectorEditMenu = ({...props}: EditMenuPropsType) => {
+export const DirectorEditMenu = (props: EditMenuPropsType) => {
 
 	return (
 		<>
@@ -28,16 +29,30 @@ export const DirectorEditMenu = ({...props}: EditMenuPropsType) => {
 					<ModalCloseButton/>
 					<ModalBody>
 
+						<Text fontSize='xl' fontWeight={"bold"}>Name: </Text>
 						<Editable defaultValue={props.data && props.data.name}>
 							<EditablePreview/>
 							<EditableInput/>
 						</Editable>
 
-						<Editable defaultValue={props.data && props.data.genre}>
+						<Text fontSize='xl' fontWeight={"bold"}>Age: </Text>
+						<Editable defaultValue={props.data && props.data.age.toString()}>
 							<EditablePreview/>
 							<EditableInput/>
 						</Editable>
 
+						<Text fontSize='xl' fontWeight={"bold"}>Movies: </Text>
+						<UnorderedList>
+							{props.data && props.data.movies.map(movie => (
+
+								<ListItem key={movie.id}>
+									<Editable defaultValue={movie.name}>
+										<EditablePreview/>
+										<EditableInput/>
+									</Editable>
+								</ListItem>
+							))}
+						</UnorderedList>
 
 
 					</ModalBody>

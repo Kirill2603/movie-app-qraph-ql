@@ -1,10 +1,11 @@
 import React, {useState} from 'react';
 import {
+	Button,
 	ListItem,
 	Menu,
 	MenuButton,
 	MenuItem,
-	MenuList,
+	MenuList, Progress,
 	Table,
 	TableContainer,
 	Tbody,
@@ -14,11 +15,12 @@ import {
 	Tr, UnorderedList
 } from "@chakra-ui/react";
 
-import {HamburgerIcon, DeleteIcon, EditIcon} from '@chakra-ui/icons'
+import {HamburgerIcon, DeleteIcon, EditIcon, AddIcon} from '@chakra-ui/icons'
 import {DeleteMenu} from "../modals/delete-menu";
 import {DirectorEditMenu} from "../modals/director-edit-menu";
 import {gql, useQuery} from "@apollo/client";
 import {MovieType} from "../movies/movies-list";
+import {AddDirectorMenu} from "../modals/add-director-menu";
 
 export type DirectorType = {
 	id: string | number,
@@ -35,15 +37,18 @@ export const DirectorsList = () => {
 
 	const [isOpenEdit, setIsOpenEdit] = useState<boolean>(false)
 	const [isOpenDelete, setIsOpenDelete] = useState<boolean>(false)
+	const [isOpenAdd, setIsOpenAdd] = useState<boolean>(false)
 
 	const handleCancel = () => {
 		setIsOpenEdit(false)
 		setIsOpenDelete(false)
+		setIsOpenAdd(false)
 	}
 
 	const handleSubmit = () => {
 		setIsOpenEdit(false)
 		setIsOpenDelete(false)
+		setIsOpenAdd(false)
 	}
 
     const {loading, error, data} = useQuery<DirectorsType>(gql`
@@ -53,15 +58,15 @@ export const DirectorsList = () => {
                 name
                 age
                 movies {
+					id
                     name
                 }
             }
         }
 	`)
 
-	console.log(data)
-
-	return (
+	if (loading) return <Progress size='xs' isIndeterminate/>
+	else return (
 
 		<>
 			<TableContainer>
@@ -95,6 +100,7 @@ export const DirectorsList = () => {
 
 											<MenuItem icon={<EditIcon/>} onClick={() => setIsOpenEdit(true)}>
 												<DirectorEditMenu
+													data={director}
 													isOpen={isOpenEdit}
 													onCancel={handleCancel}
 													onSubmit={handleSubmit}/>
@@ -120,6 +126,16 @@ export const DirectorsList = () => {
 
 				</Table>
 			</TableContainer>
+			<Button
+				onClick={() => setIsOpenAdd(true)}
+				position={"fixed"}
+				bottom={5}
+				right={5}
+				rightIcon={<AddIcon />}
+				colorScheme='blue' >
+				Add director
+			</Button>
+			<AddDirectorMenu isOpen={isOpenAdd} onCancel={handleCancel} onSubmit={handleSubmit} />
 		</>
 	);
 };
