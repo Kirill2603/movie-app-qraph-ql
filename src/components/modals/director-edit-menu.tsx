@@ -1,30 +1,44 @@
 import React, {useState} from 'react';
 import {
 	Box,
-	Button, Modal,
+	Button, Editable, EditableInput, EditablePreview, Modal,
 	ModalBody, ModalCloseButton,
 	ModalContent,
 	ModalFooter,
 	ModalHeader,
 	ModalOverlay,
 } from "@chakra-ui/react";
+import {MovieType} from "../movies/movies-list";
 
 type EditMenuPropsType = {
 	isOpen: boolean
 	onCancel: () => void
 	onSubmit: () => void
+	data?: MovieType
 }
 
-export const EditMenu = (props: EditMenuPropsType) => {
+export const DirectorEditMenu = ({...props}: EditMenuPropsType) => {
 
 	return (
 		<>
 			<Modal onClose={props.onCancel} isOpen={props.isOpen} isCentered>
-				<ModalOverlay />
+				<ModalOverlay/>
 				<ModalContent>
-					<ModalHeader>Modal Title</ModalHeader>
-					<ModalCloseButton />
+					<ModalHeader>{props.data && props.data.name}</ModalHeader>
+					<ModalCloseButton/>
 					<ModalBody>
+
+						<Editable defaultValue={props.data && props.data.name}>
+							<EditablePreview/>
+							<EditableInput/>
+						</Editable>
+
+						<Editable defaultValue={props.data && props.data.genre}>
+							<EditablePreview/>
+							<EditableInput/>
+						</Editable>
+
+
 
 					</ModalBody>
 					<ModalFooter>

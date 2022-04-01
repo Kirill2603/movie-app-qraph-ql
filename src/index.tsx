@@ -1,5 +1,6 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import React from "react";
+import * as ReactDOMClient from 'react-dom/client';
+
 import './index.css';
 
 import {ChakraProvider, extendTheme} from "@chakra-ui/react";
@@ -24,16 +25,16 @@ const config = {
 
 const customTheme = extendTheme({config})
 
-ReactDOM.render(
+const container = document.getElementById('root');
+const root = ReactDOMClient.createRoot(container as HTMLElement);
+
+root.render(
 	<React.StrictMode>
 		<ApolloProvider client={client}>
 			<ChakraProvider theme={customTheme}>
 				<App/>
-				{/*<ExchangeRates />*/}
 			</ChakraProvider>
 		</ApolloProvider>
-	</React.StrictMode>,
-	document.getElementById('root')
+	</React.StrictMode>
 )
-;
 

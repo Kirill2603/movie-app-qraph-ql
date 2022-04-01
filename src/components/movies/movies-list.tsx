@@ -14,9 +14,24 @@ import {
 	Tr
 } from "@chakra-ui/react";
 import {DeleteIcon, EditIcon, HamburgerIcon} from "@chakra-ui/icons";
-import {EditMenu} from "../modals/edit-menu";
 import {DeleteMenu} from "../modals/delete-menu";
-import {ExchangeRates} from "./queries";
+import {gql, useQuery} from "@apollo/client";
+import {MovieEditMenu} from "../modals/movie-edit-menu";
+
+export type MovieType = {
+	id: string | number,
+	name: string,
+	genre: string,
+	director: {
+		name: string
+		age: number
+	}
+
+}
+
+export type MoviesType = {
+	movies: Array<MovieType>
+}
 
 export const MoviesList = () => {
 
@@ -33,9 +48,23 @@ export const MoviesList = () => {
 		setIsOpenDelete(false)
 	}
 
+    const {loading, error, data} = useQuery<MoviesType>(gql`
+        {
+            movies {
+                id
+                name
+                genre
+                director {
+                    name
+                    age
+                }
+            }
+        }
+	`)
 
 	return (
 		<>
+
 			<TableContainer>
 				<Table variant='striped'>
 
@@ -51,43 +80,46 @@ export const MoviesList = () => {
 
 					<Tbody>
 
-						<Tr>
-							<Td>Name</Td>
-							<Td>Genre</Td>
-							<Td>Rate: </Td>
-							<Td>Director: </Td>
-							<Td><Checkbox/></Td>
-							<Td>
-								<Menu>
-									<MenuButton><HamburgerIcon/></MenuButton>
-									<MenuList>
+						{data && data.movies.map((movie) => (
+							<Tr key={movie.id}>
+								<Td>{movie.name}</Td>
+								<Td>{movie.genre}</Td>
+								<Td>Rate: </Td>
+								<Td>{movie.director.name} {movie.director.age}</Td>
+								<Td><Checkbox/></Td>
+								<Td>
+									<Menu>
+										<MenuButton><HamburgerIcon/></MenuButton>
+										<MenuList>
 
-										<MenuItem icon={<EditIcon/>} onClick={() => setIsOpenEdit(true)}>
-											<EditMenu
-												isOpen={isOpenEdit}
-												onCancel={handleCancel}
-												onSubmit={handleSubmit}/>
-											Edit
-										</MenuItem>
+											<MenuItem icon={<EditIcon/>} onClick={() => setIsOpenEdit(true)}>
+												<MovieEditMenu
+													data={movie}
+													isOpen={isOpenEdit}
+													onCancel={handleCancel}
+													onSubmit={handleSubmit}/>
+												Edit
+											</MenuItem>
 
-										<MenuItem icon={<DeleteIcon/>} onClick={() => setIsOpenDelete(true)}>
-											Delete
-											<DeleteMenu
-												isOpen={isOpenDelete}
-												onCancel={handleCancel}
-												onSubmit={handleSubmit}
-											/>
-										</MenuItem>
+											<MenuItem icon={<DeleteIcon/>} onClick={() => setIsOpenDelete(true)}>
+												Delete
+												<DeleteMenu
+													isOpen={isOpenDelete}
+													onCancel={handleCancel}
+													onSubmit={handleSubmit}
+												/>
+											</MenuItem>
 
-									</MenuList>
-								</Menu>
-							</Td>
-						</Tr>
+										</MenuList>
+									</Menu>
+								</Td>
+							</Tr>
+						))}
+
 
 					</Tbody>
 				</Table>
 			</TableContainer>
-			<ExchangeRates/>
 		</>
 	);
 };

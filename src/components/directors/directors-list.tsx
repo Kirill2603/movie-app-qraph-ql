@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import {
+	ListItem,
 	Menu,
 	MenuButton,
 	MenuItem,
@@ -10,12 +11,25 @@ import {
 	Td,
 	Th,
 	Thead,
-	Tr
+	Tr, UnorderedList
 } from "@chakra-ui/react";
 
 import {HamburgerIcon, DeleteIcon, EditIcon} from '@chakra-ui/icons'
-import {EditMenu} from "../modals/edit-menu";
 import {DeleteMenu} from "../modals/delete-menu";
+import {DirectorEditMenu} from "../modals/director-edit-menu";
+import {gql, useQuery} from "@apollo/client";
+import {MovieType} from "../movies/movies-list";
+
+export type DirectorType = {
+	id: string | number,
+	name: string,
+	age: number
+	movies: Array<MovieType>
+}
+
+export type DirectorsType = {
+	directors: Array<DirectorType>
+}
 
 export const DirectorsList = () => {
 
@@ -32,7 +46,23 @@ export const DirectorsList = () => {
 		setIsOpenDelete(false)
 	}
 
+    const {loading, error, data} = useQuery<DirectorsType>(gql`
+        {
+            directors {
+                id
+                name
+                age
+                movies {
+                    name
+                }
+            }
+        }
+	`)
+
+	console.log(data)
+
 	return (
+
 		<>
 			<TableContainer>
 				<Table variant='striped'>
@@ -47,36 +77,44 @@ export const DirectorsList = () => {
 
 					<Tbody>
 
-						<Tr>
-							<Td>name</Td>
-							<Td>name</Td>
-							<Td>Movies: </Td>
-							<Td>
-								<Menu>
-									<MenuButton><HamburgerIcon/></MenuButton>
-									<MenuList>
+						{data && data.directors.map((director) => (
+							<Tr key={director.id}>
+								<Td>{director.name}</Td>
+								<Td>{director.age}</Td>
+								<Td>
+									<UnorderedList>
+										{director.movies.map(movie => (
+											<ListItem key={movie.id}>{movie.name}</ListItem>
+										))}
+									</UnorderedList>
+								</Td>
+								<Td>
+									<Menu>
+										<MenuButton><HamburgerIcon/></MenuButton>
+										<MenuList>
 
-										<MenuItem icon={<EditIcon/>} onClick={() => setIsOpenEdit(true)}>
-											<EditMenu
-												isOpen={isOpenEdit}
-												onCancel={handleCancel}
-												onSubmit={handleSubmit}/>
-											Edit
-										</MenuItem>
+											<MenuItem icon={<EditIcon/>} onClick={() => setIsOpenEdit(true)}>
+												<DirectorEditMenu
+													isOpen={isOpenEdit}
+													onCancel={handleCancel}
+													onSubmit={handleSubmit}/>
+												Edit
+											</MenuItem>
 
-										<MenuItem icon={<DeleteIcon/>} onClick={() => setIsOpenDelete(true)}>
-											Delete
-											<DeleteMenu
-												isOpen={isOpenDelete}
-												onCancel={handleCancel}
-												onSubmit={handleSubmit}
-											/>
-										</MenuItem>
+											<MenuItem icon={<DeleteIcon/>} onClick={() => setIsOpenDelete(true)}>
+												Delete
+												<DeleteMenu
+													isOpen={isOpenDelete}
+													onCancel={handleCancel}
+													onSubmit={handleSubmit}
+												/>
+											</MenuItem>
 
-									</MenuList>
-								</Menu>
-							</Td>
-						</Tr>
+										</MenuList>
+									</Menu>
+								</Td>
+							</Tr>
+						))}
 
 					</Tbody>
 
