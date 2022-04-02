@@ -1,16 +1,7 @@
 import React, {useState} from 'react';
 import {
-	Box,
 	Button,
-	Checkbox,
-	Editable,
-	EditableInput,
-	EditablePreview,
-	Flex,
-	HStack,
 	Input,
-	InputGroup,
-	InputLeftElement,
 	Modal,
 	ModalBody,
 	ModalCloseButton,
@@ -18,14 +9,10 @@ import {
 	ModalFooter,
 	ModalHeader,
 	ModalOverlay,
-	Slider,
-	SliderFilledTrack,
-	SliderMark,
-	SliderThumb,
-	SliderTrack,
 	Text,
 } from "@chakra-ui/react";
-import {MovieType} from "../movies/movies-list";
+import {gql, useMutation} from "@apollo/client";
+import {MoviesType} from "../movies/movies-list";
 
 type EditMenuPropsType = {
 	isOpen: boolean
@@ -34,9 +21,42 @@ type EditMenuPropsType = {
 	data?: any | any
 }
 
+type UpdateDirectorType = {
+	name: string,
+	age: number,
+}
+
+type newDirectorType = {
+	id: number | string
+	name: string,
+	age: number,
+	movies: MoviesType | [],
+}
+
 export const AddDirectorMenu = ({...props}: EditMenuPropsType) => {
 
-	const [sliderValue, setSliderValue] = useState<number>(5)
+    const SAVE_DIRECTOR = gql`
+        mutation addDirector($name: String!, $age: Int!) {
+            addDirector(name: $name, age: $age) {
+                name
+				age
+            }
+        }
+	`;
+
+	const [name, setName] = useState<string>('')
+	const [age, setAge] = useState<string>('')
+
+	const [saveDirector, { error, data }] = useMutation<
+		{ addDirector: UpdateDirectorType }
+		>(SAVE_DIRECTOR, {
+		variables: { name: name, age: Number(age) }
+	});
+
+	const handleClick = () => {
+		name && age && saveDirector()
+		props.onSubmit()
+	}
 
 	return (
 		<>
@@ -48,15 +68,21 @@ export const AddDirectorMenu = ({...props}: EditMenuPropsType) => {
 					<ModalBody>
 
 						<Text fontSize='xl' fontWeight={"bold"} pb={5} pt={5}>Name: </Text>
-						<Input placeholder={'Please enter director name'}/>
+						<Input
+							value={name}
+							onChange={e => setName(e.target.value)}
+							placeholder={'Please enter director name'} />
 
 						<Text fontSize='xl' fontWeight={"bold"} pb={5} pt={5}>Age: </Text>
-						<Input placeholder={'Please enter director age'}/>
+						<Input
+							value={age}
+							onChange={e => setAge(e.target.value)}
+							placeholder={'Please enter director age'}/>
 
 					</ModalBody>
 					<ModalFooter>
 						<Button variant={"outline"} onClick={props.onCancel}>Close</Button>
-						<Button colorScheme={"blue"} onClick={props.onSubmit}>Confirm</Button>
+						<Button colorScheme={"blue"} onClick={handleClick}>Confirm</Button>
 					</ModalFooter>
 				</ModalContent>
 			</Modal>
