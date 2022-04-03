@@ -15,7 +15,10 @@ export const Header = () => {
 
 			<Text fontSize='3xl' fontWeight={'bold'}>Movies APP</Text>
 
-			<Button onClick={toggleColorMode}>
+			<Button
+				background={"blue.500"}
+				variant={"solid"}
+				onClick={toggleColorMode}>
 				Toggle {colorMode === "light" ? "Dark" : "Light"}
 			</Button>
 		</Flex>

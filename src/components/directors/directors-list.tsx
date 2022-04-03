@@ -21,6 +21,7 @@ import {DirectorEditMenu} from "../modals/director-edit-menu";
 import {gql, useQuery} from "@apollo/client";
 import {MovieType} from "../movies/movies-list";
 import {AddDirectorMenu} from "../modals/add-director-menu";
+import {client} from "../../index";
 
 export type DirectorType = {
 	id: string | number,
@@ -49,9 +50,10 @@ export const DirectorsList = () => {
 		setIsOpenEdit(false)
 		setIsOpenDelete(false)
 		setIsOpenAdd(false)
+		refetch(()=> {})
 	}
 
-    const {loading, error, data} = useQuery<DirectorsType>(gql`
+    const {loading, error, data, refetch} = useQuery<DirectorsType>(gql`
         {
             directors {
                 id
